@@ -21,6 +21,6 @@ public class Moto {
     private String model;
     private String licensePlate;
     @Column(name = "`year`")
-    private Integer modelyear;
+    private Integer modelYear;
     private String status;
 }
