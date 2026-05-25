@@ -1,9 +1,6 @@
 package com.motofix.api.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +20,7 @@ public class Moto {
     private String brand;
     private String model;
     private String licensePlate;
-    private Integer year;
+    @Column(name = "`year`")
+    private Integer modelyear;
     private String status;
 }
