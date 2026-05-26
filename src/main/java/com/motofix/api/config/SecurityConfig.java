@@ -23,9 +23,17 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // El GET de las motos sigue siendo 100% público
+                // El GET de las motos público
                 .requestMatchers(HttpMethod.GET, "/api/v1/motos/**").permitAll()
-                // POST, PUT y DELETE requerirán estar logueado
+
+                // Los ADMIN pueden hacer POST y DELETE
+                .requestMatchers(HttpMethod.POST, "/api/v1/motos").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/motos/**").hasRole("ADMIN")
+
+                // ADMIN y USER pueden actualizar con PUT
+                .requestMatchers(HttpMethod.PUT, "/api/v1/motos/**").hasAnyRole("ADMIN", "USER")
+
+                // Cualquier otra solicitud requiere autenticación
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());
@@ -42,13 +50,20 @@ public class SecurityConfig {
     // 2. Creamos el usuario usando el encriptador
     @Bean
     public UserDetailsService userDetailsService() {
+        // 1. Usuario Mecánico (USER)
+        UserDetails user = User.builder()
+                .username("mecanico")
+                .password(passwordEncoder().encode("mecanico123"))
+                .roles("USER")
+                .build();
+        
+        // 2. Usuario Jefe de Taller (ADMIN)
         UserDetails admin = User.builder()
-                .username("admin")
-                // El método .password() recibe la clave ya encriptada con BCrypt
-                .password(passwordEncoder().encode("motos123"))
+                .username("jefetaller")
+                .password(passwordEncoder().encode("jefetaller123"))
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(admin);
+        return new InMemoryUserDetailsManager(user, admin);
     }
 }
