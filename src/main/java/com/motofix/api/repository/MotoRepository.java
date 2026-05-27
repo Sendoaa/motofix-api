@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MotoRepository extends JpaRepository<Moto, Long> {
-    
+    // Busca una moto en la base de datos por su matrícula
+    java.util.Optional<Moto> findByLicensePlate(String licensePlate);
 }
