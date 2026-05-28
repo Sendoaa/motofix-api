@@ -30,9 +30,14 @@ public class Moto {
 
     @Min(value = 1900, message = "El año no puede ser anterior a 1900")
     @Max(value = 2027, message = "El año no puede ser del futuro")
-    @Column(name = "`year`") // Mantenemos tu comilla invertida exacta para la palabra reservada
-    private Integer modelYear; // Tu atributo original intacto
+    @Column(name = "`year`")
+    private Integer modelYear;
 
     @NotBlank(message = "El estado de la moto es obligatorio")
     private String status;
+
+    // Relación con Client
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 }
