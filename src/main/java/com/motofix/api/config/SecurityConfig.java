@@ -23,17 +23,25 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // El GET de las motos público
+                // El GET de las motos es público
                 .requestMatchers(HttpMethod.GET, "/api/v1/motos/**").permitAll()
 
-                // Los ADMIN pueden hacer POST y DELETE
+                // Los ADMIN (Jefe) pueden crear y borrar motos
                 .requestMatchers(HttpMethod.POST, "/api/v1/motos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/motos/**").hasRole("ADMIN")
 
-                // ADMIN y USER pueden actualizar con PUT
+                // ADMIN y USER (Mecánico) pueden actualizar motos
                 .requestMatchers(HttpMethod.PUT, "/api/v1/motos/**").hasAnyRole("ADMIN", "USER")
 
-                // Cualquier otra solicitud requiere autenticación
+                // Ambos pueden ver la lista de clientes o buscar por ID
+                .requestMatchers(HttpMethod.GET, "/api/v1/clients/**").hasAnyRole("ADMIN", "USER")
+
+                // Solo el ADMIN (Jefe) puede crear, modificar o borrar clientes
+                .requestMatchers(HttpMethod.POST, "/api/v1/clients").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/clients/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/clients/**").hasRole("ADMIN")
+
+                // Cualquier otra solicitud no mapeada requiere estar autenticado
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());
