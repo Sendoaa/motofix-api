@@ -21,30 +21,39 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                // El GET de las motos es público
-                .requestMatchers(HttpMethod.GET, "/api/v1/motos/**").permitAll()
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        // El GET de las motos es público
+                        .requestMatchers(HttpMethod.GET, "/api/v1/motos/**").permitAll()
 
-                // Los ADMIN (Jefe) pueden crear y borrar motos
-                .requestMatchers(HttpMethod.POST, "/api/v1/motos").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/motos/**").hasRole("ADMIN")
+                        // Los ADMIN (Jefe) pueden crear y borrar motos
+                        .requestMatchers(HttpMethod.POST, "/api/v1/motos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/motos/**").hasRole("ADMIN")
 
-                // ADMIN y USER (Mecánico) pueden actualizar motos
-                .requestMatchers(HttpMethod.PUT, "/api/v1/motos/**").hasAnyRole("ADMIN", "USER")
+                        // ADMIN y USER (Mecánico) pueden actualizar motos
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/motos/**").hasAnyRole("ADMIN", "USER")
 
-                // Ambos pueden ver la lista de clientes o buscar por ID
-                .requestMatchers(HttpMethod.GET, "/api/v1/clients/**").hasAnyRole("ADMIN", "USER")
+                        // Ambos pueden ver la lista de clientes o buscar por ID
+                        .requestMatchers(HttpMethod.GET, "/api/v1/clients/**").hasAnyRole("ADMIN", "USER")
 
-                // Solo el ADMIN (Jefe) puede crear, modificar o borrar clientes
-                .requestMatchers(HttpMethod.POST, "/api/v1/clients").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/clients/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/clients/**").hasRole("ADMIN")
+                        // Solo el ADMIN (Jefe) puede crear, modificar o borrar clientes
+                        .requestMatchers(HttpMethod.POST, "/api/v1/clients").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/clients/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/clients/**").hasRole("ADMIN")
 
-                // Cualquier otra solicitud no mapeada requiere estar autenticado
-                .anyRequest().authenticated()
-            )
-            .httpBasic(Customizer.withDefaults());
+                        // Ambos pueden ver las reparaciones
+                        .requestMatchers(HttpMethod.GET, "/api/v1/fixes/**").hasAnyRole("ADMIN", "USER")
+
+                        // Ambos pueden CREAR y EDITAR reparaciones
+                        .requestMatchers(HttpMethod.POST, "/api/v1/fixes").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/fixes/**").hasAnyRole("ADMIN", "USER")
+
+                        // Solo el ADMIN (Jefe) puede BORRAR una reparación del historial
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/fixes/**").hasRole("ADMIN")
+
+                        // Cualquier otra solicitud no mapeada requiere estar autenticado
+                        .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
@@ -64,7 +73,7 @@ public class SecurityConfig {
                 .password(passwordEncoder().encode("mecanico123"))
                 .roles("USER")
                 .build();
-        
+
         // 2. Usuario Jefe de Taller (ADMIN)
         UserDetails admin = User.builder()
                 .username("jefetaller")

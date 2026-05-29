@@ -48,6 +48,14 @@ El sistema modela las relaciones del taller del mundo real mediante JPA:
 | **POST** | `/api/v1/clients` | `JEFE (ADMIN)` | Registra un nuevo cliente (Email único) |
 | **DELETE** | `/api/v1/clients/{id}` | `JEFE (ADMIN)` | Elimina un cliente (Bloqueado si tiene motos) |
 
+### 🛠️ Gestión de Reparaciones (`/api/v1/fixes`)
+| Método | Endpoint | Permiso | Descripción |
+| **GET** | `/api/v1/fixes` | `JEFE` / `MECÁNICO` | Lista todo el historial de reparaciones |
+| **GET** | `/api/v1/fixes/{id}` | `JEFE` / `MECÁNICO` | Detalle de una reparación por ID |
+| **POST** | `/api/v1/fixes` | `JEFE` / `MECÁNICO` | Abre una nueva orden de trabajo (`RECIBIDA`) |
+| **PUT** | `/api/v1/fixes/{id}` | `JEFE` / `MECÁNICO` | Actualiza notas, coste o estado (Clava fecha si pasa a `ENTREGADA`) |
+| **DELETE** | `/api/v1/fixes/{id}` | `JEFE (ADMIN)` | Elimina permanentemente una orden del historial |
+
 ---
 
 ## 🛡️ Gestión Centralizada de Errores
