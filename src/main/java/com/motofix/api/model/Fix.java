@@ -34,20 +34,23 @@ public class Fix {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private FixStatus status = FixStatus.RECIBIDA; // Usa el ENUM que acabamos de crear
+    private FixStatus status = FixStatus.RECIBIDA;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime resolvedAt;
 
-    // ==========================================
     // RELACIÓN: Muchas Reparaciones pertenecen a una Moto
-    // ==========================================
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "moto_id", nullable = false)
     @NotNull(message = "La reparación debe estar vinculada a una moto obligatoriamente")
     private Moto moto;
+
+    // NUEVA RELACIÓN: Muchas Reparaciones pertenecen a un Mecánico
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mechanic_id")
+    private Mechanic mechanic;
 
     @PrePersist
     protected void onCreate() {

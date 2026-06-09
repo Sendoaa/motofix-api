@@ -25,4 +25,7 @@ public class FixDTO {
     private String motoBrand;
     private String motoModel;
     private String licensePlate;
+
+    private Long mechanicId;
+    private String mechanicName;
 }

@@ -22,4 +22,7 @@ public class FixCreateDTO {
     private Long motoId;
 
     private FixStatus status;
+
+    @NotNull(message = "El ID del mecánico es obligatorio")
+    private Long mechanicId;
 }
